@@ -1,4 +1,4 @@
-function (delta)
+function [e1, delta]= ERROR_e (n_L)
 % HW3
 % clc
 % clear
@@ -19,7 +19,7 @@ k=omega/c;
 
 % Set up geometry
 
-n_L=100;
+% n_L=100;
 delta=L/n_L; %length interval [m]
 x=0:delta:L;
 x=x';
@@ -54,6 +54,11 @@ legend('Z1','Z2')
 e_eff=1./(omega(end)-omega(1));
 Zin_delta=(abs(Zin1-Zin2)).^2;
 e1=e_eff.*trapz(Zin_delta);
+
+
+
+[minLoc1, minMag1] = peakfinder(Z12_DS, .8, 0, -1, false, true);
+minT1 = A1.f(1) + (minLoc1 - 1) * DS_DF; % Take into account 1 based indexing
 
 
 

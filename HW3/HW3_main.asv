@@ -1,0 +1,8 @@
+% HW3_main
+
+n_L=1:1000; %length interval [m]
+e1=zeros(length(n_L));
+
+for i=1:length(n_L)
+    e1=ERROR_e(n_L(i));
+end

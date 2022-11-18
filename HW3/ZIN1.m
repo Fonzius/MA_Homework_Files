@@ -1,4 +1,4 @@
-function Zin = ZIN (r1,r2,L,Zl,k,rho,c)
+function Zin = ZIN1 (r1,r2,L,Zl,k,rho,c)
 
 S1=pi*r1^2;
 S2=pi*r2^2;

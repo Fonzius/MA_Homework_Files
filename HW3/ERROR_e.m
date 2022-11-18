@@ -1,4 +1,4 @@
-function [e1, delta]= ERROR_e (n_L)
+function [e1, e2, delta]= ERROR_e (n_L)
 % HW3
 % clc
 % clear
@@ -43,21 +43,12 @@ Zin2_n=Z_end.*cos(b.*L+theta)+1j.*(rho.*c./(pi.*a(end)^2)).*sin(b.*L);
 Zin2_d=1j.*Z_end.*sin(b.*L)+(rho.*c./(pi.*a(end).^2)).*cos(b.*L-theta);
 Zin2=rho.*c./(pi*a(1).^2).*Zin2_n./Zin2_d;
 
-figure();
-% subplot(3,1,1)
-plot(f,20*log10(abs(Zin1)),'k',f,20*log10(abs(Zin2)),'r--','LineWidth',1)
-title('abs')
-legend('Z1-conical','Z2-exponential')
+% figure();
 
-% subplot(3,1,2)
-% plot(f,20*log10(real(Zin1)),'k',f,20*log10(real(Zin2)),'r--','LineWidth',1)
-% title('real')
-% legend('Z1','Z2')
-% 
-% subplot(3,1,3)
-% plot(f,20*log10(imag(Zin1)),'k',f,20*log10(imag(Zin2)),'r--','LineWidth',1)
-% title('imag')
-% legend('Z1','Z2')
+% plot(f,20*log10(abs(Zin1)),'k',f,20*log10(abs(Zin2)),'r--','LineWidth',1)
+% title('abs')
+% legend('Z1-conical','Z2-exponential')
+
 
 %% a)
 
@@ -68,7 +59,10 @@ e1=e_eff.*trapz(Zin_delta);
 %% b)
 
 figure();
-findpeaks(abs(Zin1),f);
+% findpeaks(abs(Zin1),f);
 [Zin1_p,f1_p]=findpeaks(abs(Zin1),f);
+% findpeaks(abs(Zin2),f);
+[Zin2_p,f2_p]=findpeaks(abs(Zin2),f);
+freq_interval_Z12=abs(f1_p-f2_p);
+e2=sum(freq_interval_Z12);
 
-rr=11;

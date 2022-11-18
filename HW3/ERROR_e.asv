@@ -16,6 +16,7 @@ finc = fmax / (N-1);
 f = 1:finc:fmax; % eps  2.2204e-5
 omega=2*pi*f;
 k=omega/c;
+%//////WITHOUT WALL LOSSES///////
 
 % Set up geometry
 
@@ -43,16 +44,20 @@ Zin2_d=1j.*Z_end.*sin(b.*L)+(rho.*c./(pi.*a(end).^2)).*cos(b.*L-theta);
 Zin2=rho.*c./(pi*a(1).^2).*Zin2_n./Zin2_d;
 
 figure();
-subplot(1,3,1)
+% subplot(3,1,1)
 plot(f,20*log10(abs(Zin1)),'k',f,20*log10(abs(Zin2)),'r--','LineWidth',1)
-titile('abs')
+title('abs')
+legend('Z1-conical','Z2-exponential')
 
-subplot(1,3,2)
-plot(f,20*log10(real(Zin1)),'k',f,20*log10(real(Zin2)),'r--','LineWidth',1)
-title('')
-subplot(1,3,3)
-plot(f,20*log10(imag(Zin1)),'k',f,20*log10(imag(Zin2)),'r--','LineWidth',1)
-legend('Z1','Z2')
+% subplot(3,1,2)
+% plot(f,20*log10(real(Zin1)),'k',f,20*log10(real(Zin2)),'r--','LineWidth',1)
+% title('real')
+% legend('Z1','Z2')
+% 
+% subplot(3,1,3)
+% plot(f,20*log10(imag(Zin1)),'k',f,20*log10(imag(Zin2)),'r--','LineWidth',1)
+% title('imag')
+% legend('Z1','Z2')
 
 %% a)
 
@@ -61,10 +66,13 @@ Zin_delta=(abs(Zin1-Zin2)).^2;
 e1=e_eff.*trapz(Zin_delta);
 
 %% b)
-Zin1_re=real(Zin1);
 
-findpeaks(abs(Zin1),f);
-
-
+figure();
+% findpeaks(abs(Zin1),f);
+[Zin1_p,f1_p]=findpeaks(abs(Zin1),f);
+% findpeaks(abs(Zin2),f);
+[Zin2_p,f2_p]=findpeaks(abs(Zin2),f);
+freq_interval_Z12=abs(f1_p-f2_p);
+e2=sum(freq_interval_Z12);
 
 rr=11;

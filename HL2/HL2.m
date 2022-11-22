@@ -73,7 +73,7 @@ xlim([0,Fs/20]);
 ylim([-150,0]);
 ylabel("Admittance [S]");
 xlabel("f [Hz]");
-%title("2x2 Tree");
+title("2x2 Tree");
 
 %% Ex 2.b
 
@@ -135,7 +135,7 @@ ylim([-150,0]);
 xline(f_0, '--r', 'LineWidth',0.5);
 xlabel("Frequency [Hz]");
 ylabel("Admittance [S]");
-legend("N = 0", "N = 1", "N = 2", "N = 3", "Natural frequency of single Resonator");
+legend("N_m = 0", "N_m = 1", "N_m = 2", "N_m = 3", "Natural frequency of single Resonator");
 %title("3x2 Resonator tree response at every step");
 
 %%
@@ -152,27 +152,27 @@ subplot(2,1,1)
 plot(f, db(abs(H_3x2i_0)),LineWidth=2);
 xlim([0,Fs/20]);
 ylim([-150,0]);
-% hold on
-% plot(f, db(abs(H_3x2i_1)),LineWidth=2);
-% xlim([0,Fs/20]);
-% ylim([-150,0]);
-% hold on
-% plot(f, db(abs(H_3x2i_2)),LineWidth=2);
-% xlim([0,Fs/20]);
-% ylim([-150,0]);
-% hold on
-% plot(f, db(abs(H_3x2i_3)),LineWidth=2);
-% xlim([0,Fs/20]);
-% ylim([-150,0]);
-% hold on
-% plot(f, db(abs(H_3x2i_4)),LineWidth=2);
-% xlim([0,Fs/20]);
-% ylim([-150,0]);
-% hold on
-% plot(f, db(abs(H_3x2i_5)),LineWidth=2);
-% xlim([0,Fs/20]);
-% ylim([-150,0]);
-% xline(f_0);
+hold on
+plot(f, db(abs(H_3x2i_1)),LineWidth=2);
+xlim([0,Fs/20]);
+ylim([-150,0]);
+hold on
+plot(f, db(abs(H_3x2i_2)),LineWidth=2);
+xlim([0,Fs/20]);
+ylim([-150,0]);
+hold on
+plot(f, db(abs(H_3x2i_3)),LineWidth=2);
+xlim([0,Fs/20]);
+ylim([-150,0]);
+hold on
+plot(f, db(abs(H_3x2i_4)),LineWidth=2);
+xlim([0,Fs/20]);
+ylim([-150,0]);
+hold on
+plot(f, db(abs(H_3x2i_5)),LineWidth=2);
+xlim([0,Fs/20]);
+ylim([-150,0]);
+xline(f_0);
 xlabel("Frequency [Hz]");
 ylabel("Admittance [S]");
 legend("N = 0", "N = 1", "N = 2", "N = 3", "N = 4", "N = 5");
@@ -181,21 +181,21 @@ legend("N = 0", "N = 1", "N = 2", "N = 3", "N = 4", "N = 5");
 subplot(2,1,2)
 plot(f, unwrap(angle(H_3x2i_0)),LineWidth=2);
 xlim([0,Fs/20]);
-% hold on
-% plot(f, unwrap(angle(H_3x2i_1)),LineWidth=2);
-% xlim([0,Fs/20]);
-% hold on
-% plot(f, unwrap(angle(H_3x2i_2)),LineWidth=2);
-% xlim([0,Fs/20]);
-% hold on
-% plot(f, unwrap(angle(H_3x2i_3)),LineWidth=2);
-% xlim([0,Fs/20]);
-% hold on
-% plot(f, unwrap(angle(H_3x2i_4)),LineWidth=2);
-% xlim([0,Fs/20]);
-% hold on
-% plot(f, unwrap(angle(H_3x2i_5)),LineWidth=2);
-% xlim([0,Fs/20]);
+hold on
+plot(f, unwrap(angle(H_3x2i_1)),LineWidth=2);
+xlim([0,Fs/20]);
+hold on
+plot(f, unwrap(angle(H_3x2i_2)),LineWidth=2);
+xlim([0,Fs/20]);
+hold on
+plot(f, unwrap(angle(H_3x2i_3)),LineWidth=2);
+xlim([0,Fs/20]);
+hold on
+plot(f, unwrap(angle(H_3x2i_4)),LineWidth=2);
+xlim([0,Fs/20]);
+hold on
+plot(f, unwrap(angle(H_3x2i_5)),LineWidth=2);
+xlim([0,Fs/20]);
 xlabel("Frequency [Hz]");
 ylabel("Phase [rad]");
 legend("N = 0", "N = 1", "N = 2", "N = 3", "N = 4", "N = 5");
@@ -270,5 +270,12 @@ figure()
 plot(f, db(abs(H_test_proof)),LineWidth=2);
 xlim([0,Fs/20]);
 ylim([-150,0]);
+hold on
+plot(f,db(H_3x2_3), LineWidth=2);
+xlim([0,Fs/20]);
+ylim([-150,0]);
+xline(f_0);
+legend("2x5", "3x2");
 xlabel("Frequency [Hz]");
 ylabel("Admittance [S]");
+

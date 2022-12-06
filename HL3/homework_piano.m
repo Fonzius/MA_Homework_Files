@@ -43,16 +43,15 @@ c = sqrt(Te/rho);
 
 
 % Spatial sampling parameters
-M = 520;
+% M = 520; % M= 520
 
 % Aliasing condition
 F_ny = fs/2;
 gamma = F_ny/f_0;
 
-M_max = l / sqrt(0.5*(c^2*ts^2+4*b2*ts+sqrt((c^2*ts^2+4*b2*ts)^2+16*epsilon^2*ts^2))); 
-M_min = ((-1+(1+16*epsilon*gamma^2)^(1/2))/(8*epsilon))^(1/2);
-
-% M_min < M=520 < M_max, no aliasing
+M_max1 = l / sqrt(0.5*(c^2*ts^2+4*b2*ts+sqrt((c^2*ts^2+4*b2*ts)^2+16*epsilon^2*ts^2))); 
+M_max2 = ((-1+(1+16*epsilon*gamma^2)^(1/2))/(8*epsilon))^(1/2);
+M=floor(min([M_max1 M_max2]));
 
 % Number of maximum spatial steps
 xm = l/M;
@@ -112,8 +111,7 @@ blf = (ts^2/rho)/(1 + b1*ts + zeta_l*lambda);
 % Hammer felt parameters
 ph = 2.3; %Felt stiffness exponent
 Kh = 4e8; %Felt stiffness 
-%epsilon = |hammer displacement - string displacement at hammer
-%point|(EQ 3.27)
+
 
 %% Computation of the FD scheme
 % Initialization
@@ -130,80 +128,95 @@ Fh(1,2) = Kh.*abs(eta(1,1) - y(xmh,1)).^ph;
 
 %Step 3 (t=2)
 for mm = 2:M-1
-    y(mm,3) = y(mm-1,2)+y(mm+1,2)-y(mm,1)+(ts^2.*M.*Fh(1,2).*h_window(1,mm))/Ms;% see Chaigne pg.5
+    y(mm,3) = y(mm-1,2)+y(mm+1,2)-...
+    y(mm,1)+(ts^2.*M.*Fh(1,2).*...
+    h_window(1,mm))/Ms;
 end
 eta(1,4) = 2*eta(1,2) - eta(1,1) - (ts^2.*Fh(1,2))/Mh;
 eta(1,3) = eta(1,4);
 
 
 % Computation loop
-
 for nn = 4:N
+
+if eta(1,nn) < y(xmh,nn)
+    Fh(1,nn) = 0;
+else
+    Fh(1,nn) = Kh.*abs(eta(1,nn)...
+        - y(xmh,nn)).^ph;
+end
+
+F(:,nn) = Fh(1,nn).*h_window(1,:);
+
+
+y(1,nn+1) = bl1.*y(1,nn) +...
+            bl2.*y(2,nn) +...
+            bl3.*y(3,nn) +...
+            bl4.*y(1,nn-1) +...
+            blf.*F(1,nn);
+
+y(2,nn+1) = a1.*(y(4,nn) - y(2,nn)...
+                + 2.*y(1,nn)) +...
+            a2.*(y(3,nn)...
+                + y(1,nn)) +...
+            a3.*y(2,nn) +...
+            a4.*y(2,nn-1) +...
+            a5.*(y(3,nn-1)...
+               + y(1,nn-1)) +...
+            af.*F(1,nn);
+
+for mm = 3:M-2
     
-    if eta(1,nn) < y(xmh,nn)
-        Fh(1,nn) = 0;
-    else
-        Fh(1,nn) = Kh.*abs(eta(1,nn) - y(xmh,nn)).^ph;
-    end
-    
-    F(:,nn) = Fh(1,nn).*h_window(1,:);
-    
+    y(mm,nn+1) = a1.*(y(mm+2,nn) +...
+                      y(mm-2,nn)) +...
+                 a2.*(y(mm+1,nn) +...
+                      y(mm-1,nn)) +...
+                 a3.*y(mm,nn) +...
+                 a4.*y(mm,nn-1) +...
+                 a5.*(y(mm+1,nn-1)+...
+                      y(mm-1,nn-1)) +...
+                 af.*F(mm,nn);
+end
 
-    y(1,nn+1) = bl1.*y(1,nn) + ...
-                bl2.*y(2,nn) + ...
-                bl3.*y(3,nn) + ...
-                bl4.*y(1,nn-1) + ...
-                blf.*F(1,nn);
+y(M-1,nn) = a1.*(2*y(M,nn) - y(M-1, nn)...
+               + y(M-3, nn)) +...
+            a2.*(y(M,nn) + y(M-2,nn)) +...
+            a3.*(y(M-1, nn)) + ...
+            a4.*y(M-1,nn-1) + ...
+            a5.*(y(M,nn-1) + ...
+                 y(M-2,nn-1)) + ...
+            af.*F(M-1,nn);
 
-    y(2,nn+1) = a1.*(y(4,nn) - y(2,nn) + 2.*y(1,nn)) + ...
-                a2.*(y(3,nn) + y(1,nn)) + ...
-                a3.*y(2,nn) + ...
-                a4.*y(2,nn-1) + ...
-                a5.*(y(3,nn-1) + y(1,nn-1)) + ...
-                af.*F(1,nn);
+y(M,nn) = br1.*y(M,nn) +...
+          br2.*y(M-1, nn) +...
+          br2.*y(M-2,nn) +...
+          br4.*y(M,nn-1) +...
+          brf.*F(M,nn);
 
-    for mm = 3:M-2
-        
-        y(mm,nn+1) = a1.*(y(mm+2,nn) + y(mm-2,nn)) + ...
-                     a2.*(y(mm+1,nn) + y(mm-1,nn)) + ...
-                     a3.*y(mm,nn) + ...
-                     a4.*y(mm,nn-1) + ...
-                     a5.*(y(mm+1,nn-1)+y(mm-1,nn-1)) + ...
-                     af.*F(mm,nn);
-    end
+eta(1,nn+1) = d1.*eta(1,nn)...
+    + d2.*eta(1,nn-1) + df.*Fh(1,nn);
 
-    y(M-1,nn) = a1.*(2*y(M,nn) - y(M-1, nn) + y(M-3, nn)) + ...
-                a2.*(y(M,nn) + y(M-2,nn)) + ...
-                a3.*(y(M-1, nn)) + ...
-                a4.*y(M-1,nn-1) + ...
-                a5.*(y(M,nn-1) + y(M-2,nn-1)) + ...
-                af.*F(M-1,nn);
+for mavg = M-11:M
+    avg_disp(1,nn) = avg_disp(1,nn)...
+        + y(mavg, nn);
+end
 
-    y(M,nn) = br1.*y(M,nn) + ...
-              br2.*y(M-1, nn) + ...
-              br2.*y(M-2,nn) + ...
-              br4.*y(M,nn-1) + ...
-              brf.*F(M,nn);
-
-    eta(1,nn+1) = d1.*eta(1,nn) + d2.*eta(1,nn-1) + df.*Fh(1,nn);
-    
-    for mavg = M-12:M
-        avg_disp(1,nn) = avg_disp(1,nn) + y(mavg, nn);
-    end
-    
-    avg_disp(1,nn) = avg_disp(1,nn)/12;
+avg_disp(1,nn) = avg_disp(1,nn)/12;
 end
 
 %% Plot the displacement in time
 
 figure
-for ii = 1:100:size(y,2)
-    plot(y(:,ii),'LineWidth',2)
-    ylim([-0.0000001 0.0000001])
-    xlim([0,M]);
-    xlabel('x');
-    ylabel("y");
-    title(ii);
+xx=0:l/(M-1):l;
+for ii = 1:100:size(y,2)  
+    plot(xx,y(:,ii),'LineWidth',2)
+    ylim(0.6*[-0.000001 0.000001])
+    xlim([0,l]);
+%     xticks(0:xm:l)
+%     set(gca,'XTick',0:xm:l)
+    xlabel('x[m]');
+    ylabel("y[m]");
+    title(ii*ts,'[s]');
     pause(0.000001);
 end
 
@@ -212,10 +225,36 @@ end
 % Play the sound
 
 t = 0:ts:signal_length-ts;
-figure
-plot(t, avg_disp, LineWidth=2);
+figure(1)
 
+plot(t, avg_disp, LineWidth=2);
+xlabel('t[s]')
+ylabel('displacement[m]')
 soundsc(avg_disp, fs);
+%%
+winwid=0.04; % 窗宽度
+at_thd=5e-3; %起始时刻阈值
+pw_ref=1e-6;
+dt =1/fs;
+Nw=round(winwid/dt);
+Nov=round(Nw/5);
+
+% [sample, FS] = audioread("GuitarSample.wav");
+figure(2)
+ sample_fft = fft(avg_disp);
+ f= 3*fs*(0:(N/2))/N;
+%  f=0:fs;
+ plot(f,sample_fft)
+ xlim([0 fs/2])
+% sample_fft=sample_fft(0:length(sample_fft)/2);
+
+figure(3)
+spectrogram(avg_disp, Nw, Nov, [], fs);
+xlim([0,1]);
+ylim([0 8]);
+title("Spectrogram of C2 Piano sound synthesis");
+
+
 % Save on disk
 sound = decimate(avg_disp, 4, 'fir');
 sound = (sound/max(abs(sound)));

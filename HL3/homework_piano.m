@@ -235,13 +235,13 @@ SPL=abs(SPL);
 figure(2)
 subplot(2,1,1)
 plot(fre,SPL,'LineWidth',1)
-xlim([0 600])
+xlim([0 2000])
 xlabel('Frequency (Hz)')
 ylabel('Magnitude')
 hold on
 subplot(2,1,2)
 plot(fre,angle(spl),'LineWidth',1)
-xlim([0 600])
+xlim([0 2000])
 xlabel('Frequency (Hz)')
 ylabel('Phase')
 

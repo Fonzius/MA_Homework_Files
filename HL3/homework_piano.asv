@@ -43,6 +43,8 @@ c = sqrt(Te/rho);
 
 
 % Spatial sampling parameters
+% M = 520; % M= 520
+
 % Aliasing condition
 F_ny = fs/2;
 gamma = F_ny/f_0;
@@ -59,7 +61,9 @@ xm = l/M;
 m = 0:1:M;
 l_m = l.*m/M;
 
+
 % FD parameters
+%courant_number = c*(ts/xm);
 lambda = c * ts/xm;
 mu = epsilon^2/(c^2*xm^2);
 nu = (2*b2*ts)/(xm^2);
@@ -264,8 +268,8 @@ soundsc(avg_disp, fs);
 
 %% Save the estimated sound signal in a file 
 
-sound = decimate(avg_disp, 4, 'fir');
-sound = (sound/max(abs(sound)));
+% sound = decimate(avg_disp, 4, 'fir');
+% sound = (sound/max(abs(sound)));
 audiowrite('10669941_Bernasconi_10876787_Luan_Piano.wav', sound, fs/4);
 
 

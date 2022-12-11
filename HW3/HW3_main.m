@@ -38,7 +38,7 @@ m=4.2; % [m^-1]
 rho=1.2; % [kg/m^3]  (20[c])
 c=343; % [m/3] (20[c])
 
-fmax = 2000; %2000         % maximum evaluation frequency (Hz)
+fmax = 20000; %2000         % maximum evaluation frequency (Hz)
 N = fmax;             % number of frequencies for evaluation (even)
 finc = fmax / (N-1);
 f = 1:finc:fmax; % eps  2.2204e-5
@@ -158,24 +158,42 @@ f_rad_harm=x_rad.*f1_rad_p(1);
 f_compound_harm=x_compound.*f1_compound_p(1);
 
 figure();
-subplot(3,1,1)
-scatter(x_ori,f1_ori_p,'k')
+% subplot(2,1,1)
+plot(x_ori,f_ori_harm./f_ori_harm(1),LineWidth=1.5)
 hold on
-scatter(x_ori,f_ori_harm,'r')
-legend('Z-max','Z-harmonic')
-
-
-subplot(3,1,2)
-scatter(x_rad,f1_rad_p,'k')
+plot(x_ori,2.*f_ori_harm./f_ori_harm(1),LineWidth=1.5)
 hold on
-scatter(x_rad,f_rad_harm,'r')
-legend('Z-max','Z-harmonic')
-
-subplot(3,1,3)
-scatter(x_compound,f1_compound_p,'k')
+plot(x_ori,f1_ori_p./f1_ori_p(1),LineWidth=1.5)
 hold on
-scatter(x_compound,f_compound_harm,'r')
-legend('Z-max','Z-harmonic')
+plot(x_rad,f1_rad_p./f1_rad_p(1),LineWidth=1.5)
+hold on
+% plot(x_rad,f_rad_harm./f_rad_harm(1),'--',LineWidth=1.5)
+hold on
+plot(x_compound,f1_compound_p./f1_compound_p(1),LineWidth=1.5)
+hold on
+% plot(x_compound,f_compound_harm./f_compound_harm(1),':',LineWidth=1.5)
+legend('Harmonic','Harmonic-odd','Exponential-without radiation',...
+    'Exponential-with radiation','Compound-with radiation',Location='southeast')
 
+% legend('Zori-max','Zori-harmonic','Zrad-max','Zrad-harmonic',Location='southeast')
+% title('exponential horn without radiation')
+xlim([0 41])
 
+% subplot(3,1,2)
+% plot(x_rad,f1_rad_p,'k')
+% hold on
+% plot(x_rad,f_rad_harm,'r')
+% % legend('Z-max','Z-harmonic')
+% title('exponential horn with radiation')
+% xlim([0 41])
+
+% subplot(2,1,2)
+% plot(x_compound,f1_compound_p./f1_compound_p(1),'k')
+% hold on
+% plot(x_compound,f_compound_harm./f_compound_harm(1),'r')
+% % legend('Z-max','Z-harmonic')
+% xlim([0 41])
+% title('compound horn with radiation')
+% 
+% 
 

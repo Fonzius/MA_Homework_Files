@@ -38,7 +38,7 @@ m=4.2; % [m^-1]
 rho=1.2; % [kg/m^3]  (20[c])
 c=343; % [m/3] (20[c])
 
-fmax = 2000; %2000         % maximum evaluation frequency (Hz)
+fmax = 20000; %2000         % maximum evaluation frequency (Hz)
 N = fmax;             % number of frequencies for evaluation (even)
 finc = fmax / (N-1);
 f = 1:finc:fmax; % eps  2.2204e-5
@@ -81,7 +81,8 @@ hold on
 
 plot(f,20*log10(abs(Zin1_ori)),'r',LineWidth=1.5)
 xlabel('f [Hz]')
-ylabel('Z_1 [dB]')
+ylabel('Z_1 Amplitude [dB]')
+ylim([50 220])
 legend('With radiation','Without radiation')
 % title('Input impedance of exponential horn without radiation impedance')
 
@@ -89,9 +90,10 @@ subplot(2,1,2)
 plot(f,angle(Zin1_rad),'b',LineWidth=1.5)
 hold on
 
-plot(f,20*log10(abs(Zin1_ori)),'r',LineWidth=1.5)
+plot(f,angle(Zin1_ori),'r',LineWidth=1.5)
 xlabel('f [Hz]')
-ylabel('Z_1 [dB]')
+ylabel('Z_1 Phase')
+ylim([-2 3])
 legend('With radiation','Without radiation')
 
 
@@ -118,20 +120,35 @@ Zin_compound=Z0.*Zin_compound_n./Zin_compound_d;
 
 
 figure();
-plot(f,20*log10(abs(Zin_compound)))
-title('Input impedance of compound horn with radiation impedance')
+subplot(2,1,1)
+plot(f,20*log10(abs(Zin_compound)),LineWidth=1.5)
+xlabel('f[Hz]')
+ylabel('Amplitude[dB]')
+% title('Input impedance of compound horn with radiation impedance')
+subplot(2,1,2)
+plot(f,angle(Zin_compound),LineWidth=1.5)
+xlabel('f[Hz]')
+ylabel('Phase')
+
+
 
 figure();
 subplot(2,1,1)
 plot(f,20*log10(abs(Zin1_ori)),'k',f,20*log10(abs(Zin1_rad)),'b',...
     f,20*log10(abs(Zin_compound)),'r',f1_ori_p,Zin1_ori_p,'k*',...
-    f1_rad_p,Zin1_rad_p,'b*',f1_compound_p,Zin1_compound_p,'r*')
+    f1_rad_p,Zin1_rad_p,'b*',f1_compound_p,Zin1_compound_p,'r*',LineWidth=1)
 legend('exponential-without radiation','exponential-with radiation','compound')
+ylim([50 290])
+xlabel('f[Hz]')
+ylabel('Amplitude[dB]')
 
 subplot(2,1,2)
-plot(f,angle(Zin1_ori),'k',f,angle(Zin1_rad),'b',f,angle(Zin_compound),'r')
+plot(f,angle(Zin1_ori),'k',f,angle(Zin1_rad),'b',f,angle(Zin_compound),'r',LineWidth=1)
 legend('exponential-without radiation','exponential-with radiation','compound')
-
+xlabel('f[Hz]')
+ylabel('Phase')
+ylim([-2 3.5])
+%% e)
 x_ori=1:length(f1_ori_p);
 x_rad=1:length(f1_rad_p);
 x_compound=1:length(f1_compound_p);
@@ -141,24 +158,39 @@ f_rad_harm=x_rad.*f1_rad_p(1);
 f_compound_harm=x_compound.*f1_compound_p(1);
 
 figure();
-subplot(3,1,1)
-scatter(x_ori,f1_ori_p,'k')
+subplot(2,1,1)
+plot(x_ori,f1_ori_p./f1_ori_p(1),LineWidth=1.5)
 hold on
-scatter(x_ori,f_ori_harm,'r')
-legend('Z-max','Z-harmonic')
-
-
-subplot(3,1,2)
-scatter(x_rad,f1_rad_p,'k')
+plot(x_ori,f_ori_harm./f_ori_harm(1),LineWidth=1.5)
 hold on
-scatter(x_rad,f_rad_harm,'r')
-legend('Z-max','Z-harmonic')
-
-subplot(3,1,3)
-scatter(x_compound,f1_compound_p,'k')
+plot(x_rad,f1_rad_p./f1_rad_p(1),LineWidth=1.5)
 hold on
-scatter(x_compound,f_compound_harm,'r')
-legend('Z-max','Z-harmonic')
+plot(x_rad,f_rad_harm./f_rad_harm(1),'--',LineWidth=1.5)
+hold on
+plot(x_compound,f1_compound_p./f1_compound_p(1),LineWidth=1.5)
+hold on
+plot(x_compound,f_compound_harm./f_compound_harm(1),':',LineWidth=1.5)
+legend('Z-harmonic','Zexori','Zrad','Zrad-harmonic',Location='southeast')
+
+% legend('Zori-max','Zori-harmonic','Zrad-max','Zrad-harmonic',Location='southeast')
+title('exponential horn without radiation')
+xlim([0 41])
+
+% subplot(3,1,2)
+% plot(x_rad,f1_rad_p,'k')
+% hold on
+% plot(x_rad,f_rad_harm,'r')
+% % legend('Z-max','Z-harmonic')
+% title('exponential horn with radiation')
+% xlim([0 41])
+
+subplot(2,1,2)
+plot(x_compound,f1_compound_p./f1_compound_p(1),'k')
+hold on
+plot(x_compound,f_compound_harm./f_compound_harm(1),'r')
+% legend('Z-max','Z-harmonic')
+xlim([0 41])
+title('compound horn with radiation')
 
 
 

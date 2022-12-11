@@ -61,8 +61,10 @@ e1=e_eff.*trapz(Zin_delta);
 figure();
 % findpeaks(abs(Zin1),f);
 [Zin1_p,f1_p]=findpeaks(abs(Zin1),f);
+close
 % findpeaks(abs(Zin2),f);
 [Zin2_p,f2_p]=findpeaks(abs(Zin2),f);
+close
 freq_interval_Z12=abs(f1_p-f2_p);
 e2=sum(freq_interval_Z12);
 

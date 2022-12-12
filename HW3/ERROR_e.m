@@ -13,7 +13,7 @@ c=343; % [m/3] (20[c])
 fmax = 2000;          % maximum evaluation frequency (Hz)
 N = fmax;             % number of frequencies for evaluation (even)
 finc = fmax / (N-1);
-f = 1:finc:fmax; % eps  2.2204e-5
+f =1:finc:fmax; % eps  2.2204e-5
 omega=2*pi*f;
 k=omega/c;
 %//////WITHOUT WALL LOSSES///////
@@ -45,9 +45,10 @@ Zin2=rho.*c./(pi*a(1).^2).*Zin2_n./Zin2_d;
 
 % figure();
 
-% plot(f,20*log10(abs(Zin1)),'k',f,20*log10(abs(Zin2)),'r--','LineWidth',1)
-% title('abs')
-% legend('Z1-conical','Z2-exponential')
+plot(f,20*log10(abs(Zin1)),'k',f,20*log10(abs(Zin2)),'r--','LineWidth',1)
+title('abs')
+legend('Z1-conical','Z2-exponential')
+hold on
 
 
 %% a)

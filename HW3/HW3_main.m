@@ -104,7 +104,7 @@ e1=e_eff.*trapz(Zin_delta);
 %% d)
 Zin_exp=Zin1_rad;
 a_cyl=a(1);
-L_cyl=0.85;
+L_cyl=0.85; %%%%5
 S_cyl=pi*a_cyl^2;
 Z0=rho*c/S_cyl;
 
@@ -113,6 +113,15 @@ Zin_compound_d=1j.*Zin_exp.*sin(k.*L_cyl)+Z0.*cos(k.*L_cyl);
 Zin_compound=Z0.*Zin_compound_n./Zin_compound_d;
 
 
+%%%%%%test cylinder
+% Zin_cyl_n=0.*cos(k.*L_cyl)+1j.*Z0.*sin(k.*L_cyl);
+% Zin_cyl_d=1j.*0.*sin(k.*L_cyl)+Z0.*cos(k.*L_cyl);
+% Zin_cyl=Z0.*Zin_cyl_n./Zin_cyl_d;
+% Zin_cyl=1j*Z0.*tan(k.*L_cyl);
+% 
+% plot(f,20*log10(abs(Zin_cyl)));
+
+%%%%%%%%%
 [Zin1_ori_p,f1_ori_p]=findpeaks(20*log10(abs(Zin1_ori)),f);
 [Zin1_rad_p,f1_rad_p]=findpeaks(20*log10(abs(Zin1_rad)),f);
 [Zin1_compound_p,f1_compound_p]=findpeaks(20*log10(abs(Zin_compound)),f);
@@ -157,11 +166,15 @@ f_ori_harm=x_ori.*f1_ori_p(1);
 f_rad_harm=x_rad.*f1_rad_p(1);
 f_compound_harm=x_compound.*f1_compound_p(1);
 
+peaknumbers=41;
+xx=1:peaknumbers;
+yy=1:peaknumbers;
+yy2=1:2:2*peaknumbers;
+
+
 figure();
-% subplot(2,1,1)
-plot(x_ori,f_ori_harm./f_ori_harm(1),LineWidth=1.5)
-hold on
-plot(x_ori,2.*f_ori_harm./f_ori_harm(1),LineWidth=1.5)
+subplot(2,1,1)
+plot(xx,yy,xx,yy2,LineWidth=1.5)
 hold on
 plot(x_ori,f1_ori_p./f1_ori_p(1),LineWidth=1.5)
 hold on
@@ -173,27 +186,26 @@ plot(x_compound,f1_compound_p./f1_compound_p(1),LineWidth=1.5)
 hold on
 % plot(x_compound,f_compound_harm./f_compound_harm(1),':',LineWidth=1.5)
 legend('Harmonic','Harmonic-odd','Exponential-without radiation',...
-    'Exponential-with radiation','Compound-with radiation',Location='southeast')
+    'Exponential-with radiation','Compound-with radiation',Location='northwest')
+xlim([1 peaknumbers])
+xlabel('Peaknumber')
+ylabel('Mulipules')
+hold on
 
-% legend('Zori-max','Zori-harmonic','Zrad-max','Zrad-harmonic',Location='southeast')
-% title('exponential horn without radiation')
-xlim([0 41])
-
-% subplot(3,1,2)
-% plot(x_rad,f1_rad_p,'k')
-% hold on
-% plot(x_rad,f_rad_harm,'r')
-% % legend('Z-max','Z-harmonic')
-% title('exponential horn with radiation')
-% xlim([0 41])
-
-% subplot(2,1,2)
-% plot(x_compound,f1_compound_p./f1_compound_p(1),'k')
-% hold on
-% plot(x_compound,f_compound_harm./f_compound_harm(1),'r')
-% % legend('Z-max','Z-harmonic')
-% xlim([0 41])
-% title('compound horn with radiation')
-% 
-% 
-
+subplot(2,1,2)
+plot(xx,yy,'--*',xx,yy2,'--*',LineWidth=1.5)
+hold on
+plot(x_ori,f1_ori_p./f1_ori_p(1),'--*',LineWidth=1.5)
+hold on
+plot(x_rad,f1_rad_p./f1_rad_p(1),'--*',LineWidth=1.5)
+hold on
+% plot(x_rad,f_rad_harm./f_rad_harm(1),'--',LineWidth=1.5)
+hold on
+plot(x_compound,f1_compound_p./f1_compound_p(1),'--*',LineWidth=1.5)
+hold on
+% plot(x_compound,f_compound_harm./f_compound_harm(1),':',LineWidth=1.5)
+legend('Harmonic','Harmonic-odd','Exponential-without radiation',...
+    'Exponential-with radiation','Compound-with radiation',Location='northwest')
+xlim([1 5])
+xlabel('Peaknumber')
+ylabel('Mulipules')

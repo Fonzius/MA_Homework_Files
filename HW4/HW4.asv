@@ -96,16 +96,14 @@ Y = 1./(Z_final(:,5));
 % PlateZ and since real(X) is what determines the damping the string will
 % basically not dampen. For PlateZ2 for some reason its values will break
 % everything that comes after this
-
-
 X = Y .* (1j .* Z0)./pi; 
 
 a = zeros(length(f), 300);
 b = zeros(length(f), 300);
 epsilon = zeros(length(f), 300);
 
-% Detune of the string. Built so that omega*epsilon always goes from -3 to 3 
-% as in the graphs
+% Detune of the string. Built so that omega*epsilon always goes from -3 to 3 as in
+% the graphs
 for ii = 1:length(f)
     epsilon(ii,:) = linspace(-3/(omega(ii)), 3/(omega(ii)), 300);
 end
@@ -140,19 +138,12 @@ for ii = 1:length(f)
     x(ii,:) = linspace(0,Z_final(ii,2),1000);
 end
 
-%Displacement computed for an arbitrary epsilon. The higher/lower epsilon
-%should give more minima, epsilon values around the middle (150th index)
-%should give less minima. For PlateZ if you increase by multiple orders of
-%magnitude X the reults are very convincing, for PlateZ2 it seems that the
-%damping is way too strong or something
-
 F0 = 1; % F(0), initial condition for force on the strings
-mu = sqrt(epsilon(:,10).^2 + (X.^2)); 
+mu = sqrt(epsilon(:,10).^2 + (X.^2));
 
 % Acoustics of musical instruments, page 280
 Vb = ((2.*pi.*F0.*X)./(mu.*Z0)) .* exp(1j.*(epsilon(:,10) + X + 1) .* (omega'.*t)) .* (mu.*cos(mu.*omega'.*t) + 1j.*X.*sin(mu.*omega'.*t));
 
 figure
 plot(t, db(abs(Vb(5,:)./Vb(5,1))));
-title("Bridge displacement");
 

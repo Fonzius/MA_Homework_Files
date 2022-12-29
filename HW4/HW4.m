@@ -43,36 +43,45 @@ Z_f5 = str2double(sortrows(Z_sorted(193:240,:),4));
 % hand by choosing the individual points where to put the strings
 
 figure
-plot(Z_f1(1:6,1),H-Z_f1(1:6,2), '-o', Color='r');
+plot(Z_f1(1:10,1),Z_f1(1:10,2), '-o', Color='r');
 hold on
-plot(Z_f2(1:6,1),H-Z_f2(1:6,2), '-o', Color='g');
+plot(Z_f2(1:10,1),Z_f2(1:10,2), '-o', Color='g');
 hold on
-plot(Z_f3(1:6,1),H-Z_f3(1:6,2), '-o', Color='b');
+plot(Z_f3(1:10,1),Z_f3(1:10,2), '-o', Color='b');
 hold on
-plot(Z_f4(1:6,1),H-Z_f4(1:6,2), '-o', Color='k');
+plot(Z_f4(1:10,1),Z_f4(1:10,2), '-o', Color='k');
 hold on
-plot(Z_f5(1:7,1),H-Z_f5(1:7,2), '-o', Color='magenta');
+plot(Z_f5(1:10,1),Z_f5(1:10,2), '-o', Color='magenta');
 hold on
 
-plot(L-Z_f1(1:6,1),H-Z_f1(1:6,2), '-o', Color='r');
+plot(L-Z_f1(1:10,1),Z_f1(1:10,2), '-o', Color='r');
 hold on
-plot(L-Z_f2(1:6,1),H-Z_f2(1:6,2), '-o', Color='g');
+plot(L-Z_f2(1:10,1),Z_f2(1:10,2), '-o', Color='g');
 hold on
-plot(L-Z_f3(1:6,1),H-Z_f3(1:6,2), '-o', Color='b');
+plot(L-Z_f3(1:10,1),Z_f3(1:10,2), '-o', Color='b');
 hold on
-plot(L-Z_f4(1:6,1),H-Z_f4(1:6,2), '-o', Color='k');
+plot(L-Z_f4(1:10,1),Z_f4(1:10,2), '-o', Color='k');
 hold on
-plot(L-Z_f5(1:7,1),H-Z_f5(1:7,2), '-o', Color='magenta');
+plot(L-Z_f5(1:10,1),Z_f5(1:10,2), '-o', Color='magenta');
 
 
 %Chosen points for the bridge. Values are for PlateZ so the bridge for
 %PlateZ2 will look weird
 
-Z_final = [Z_f1(2,1), H-Z_f1(2,2), Z_f1(2,3:5); ...
+%For PlateZ
+% Z_final = [Z_f1(2,1), H-Z_f1(2,2), Z_f1(2,3:5); ...
+%            Z_f2(1,1), H-Z_f2(1,2), Z_f2(1,3:5); ...
+%            Z_f3(6,1), H-Z_f3(6,2), Z_f3(6,3:5); ...
+%            L-Z_f4(2,1), Z_f4(2,2), Z_f4(2,3:5); ...
+%            L-Z_f5(6,1), Z_f5(6,1), Z_f5(6,3:5); ...
+%            ];
+
+% For PlateZ2
+Z_final = [Z_f1(6,1), H-Z_f1(6,2), Z_f1(6,3:5); ...
            Z_f2(1,1), H-Z_f2(1,2), Z_f2(1,3:5); ...
-           Z_f3(6,1), H-Z_f3(6,2), Z_f3(6,3:5); ...
+           Z_f3(1,1), H-Z_f3(1,2), Z_f3(1,3:5); ...
            L-Z_f4(2,1), Z_f4(2,2), Z_f4(2,3:5); ...
-           L-Z_f5(6,1), Z_f5(6,1), Z_f5(6,3:5); ...
+           L-Z_f5(4,1), Z_f5(4,1), Z_f5(4,3:5); ...
            ];
 figure
 plot(Z_final(:,1), Z_final(:,2));
@@ -80,7 +89,7 @@ axis([0,L, 0,H]);
 title("Bridge Design");
 
 %% Point c
-rho = 0.0108; %[kg/m]
+rho = 10.8e-3; %[kg/m] piano wire linear density, from the HW text
 
 f = [349.23, 440, 523.25, 659.25, 783.99];
 omega = f.*2.*pi;
@@ -98,7 +107,7 @@ Y = 1./(Z_final(:,5));
 % everything that comes after this
 
 
-X = Y .* (1j .* Z0)./pi; 
+X = (Y .* 1j .* Z0)./pi;
 
 a = zeros(length(f), 300);
 b = zeros(length(f), 300);
@@ -125,9 +134,9 @@ end
 figure
 for ii = 1:length(f)
     subplot(length(f),1,ii);
-    plot(omega(ii)*epsilon(ii,:), omega(ii)*a(ii,:));
+    plot(omega(ii).*epsilon(ii,:), omega(ii).*real(a(ii,:)));
     hold on
-    plot(omega(ii)*epsilon(ii,:), omega(ii)*b(ii,:));
+    plot(omega(ii).*epsilon(ii,:), omega(ii).*real(b(ii,:)));
     title(ii + "th freq " + f(ii));
 end
 

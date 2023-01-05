@@ -10,9 +10,11 @@ rho = 1.225;
 
 L_c = 0.04; %[m] Mouth end correction for low freqs
 
-%x1 = ((pi*c)/(2*pi*f_e4*(1+0.85*tan(alpha))))*(L+L_c)*(1+0.85*tan(alpha)); %Derived from wn = (n*pi*c)/(L+x1)
-%a1 = x1*tan(alpha); %Mouth radius
-%a2 = (x1+L)*tan(alpha); %End radius
+%%
+
+x1 = ((pi*c)/(2*pi*f_e4*(1+0.85*tan(alpha))))*(L+L_c)*(1+0.85*tan(alpha)); %Derived from wn = (n*pi*c)/(L+x1)
+a1 = x1*tan(alpha); %Mouth radius
+a2 = (x1+L)*tan(alpha); %End radius
 
 %% Question 1, Impedance
 r1 = linspace(L*tan(alpha),0.1, 1000);

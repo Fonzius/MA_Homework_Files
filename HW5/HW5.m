@@ -15,21 +15,27 @@ L_c = 0.04; %[m] Mouth end correction for low freqs
 %a2 = (x1+L)*tan(alpha); %End radius
 
 %% Question 1, Impedance
-r1 = linspace(L*tan(alpha),0.1, 1000);
-r0 = r1 -L*tan(alpha);
+r0 = linspace(L*tan(alpha),0.1, 1000); 
+r1 = r0 - L*tan(alpha);
+
 Z_full = zeros(1,1000); 
 k_e4 = 2*pi*f_e4/c;
 
+Z_mouth = 1j.*L_c*rho.*2.*pi.*f_e4./r0;
+
 for ii = 1:length(r1)
+    
     Z_L= (0.25.*(f_e4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_e4*2*pi/pi./r1(ii)).*((1+cos(alpha))/2);
     Z_full(ii) = ZIN1(r0(ii), r1(ii),L+0.61*L+L_c, Z_L,  k_e4, rho, c);
 end
 
-[Z_full_max, max_full_index] = max(abs(Z_full));
+[Z_full_max, max_full_index] = min(abs(Z_full));
 a1 = r0(max_full_index);
 a2 = r1(max_full_index);
 
-x1 = a1/tan(alpha);
+x1 = a2/tan(alpha);
+
+
 
 %% Question 2
 
@@ -60,7 +66,7 @@ for ii = 1:length(D)
     Z_total(ii) = ZIN1(a1, r1, L-D(ii), Z_ahah(ii), k_fs4, rho, c);
 end
 
-[Z_max, max_index] = max(abs(Z_total));
+[Z_max, max_index] = min(abs(Z_total));
 D_max = D(max_index);
 
 %% Question 3
@@ -87,7 +93,7 @@ for ii = 1:length(D_g)
     Z_total_g(ii) = ZIN1(a1, r1, L-D_g(ii), Z_total_middle_g, k_gs4, rho,c);
 end
 
-[Z_max_g, max_index_g] = max(abs(Z_total_g));
+[Z_max_g, max_index_g] = min(abs(Z_total_g));
 D_max_g = D_g(max_index_g);
 
 %check cut frequency, worst case pipe with fixed radius a2

@@ -100,7 +100,7 @@ f = [349.23, 440, 523.25, 659.25, 783.99];
 omega = f.*2.*pi;
 
 c = 2.*Z_final(:,2).*f'; %lambda * f
-T = rho.*c.^2;
+%T = rho.*c.^2;
 T = [1000;1000;1000;1000;1000];
 
 %c = sqrt(T/rho);
@@ -163,14 +163,14 @@ for ii = 1:length(f)
     plot(epsilon(ii,:), imag(b(ii,:)));
     title(ii + "th freq " + f(ii));
     xlabel("Epsilon [Hz]");
-    ylabel("Eigenmode Shift[Hz]");
+    ylabel("Time Decay");
     legend("a","b");
     grid minor
 end
 
 %% Point d
 
-t = linspace(0,10,1000); %time axis
+t = linspace(0,1,1000); %time axis
 
 %Displacement computed for an arbitrary epsilon. The higher/lower epsilon
 %should give more minima, epsilon values around the middle (150th index)
@@ -178,16 +178,43 @@ t = linspace(0,10,1000); %time axis
 %magnitude X the reults are very convincing, for PlateZ2 it seems that the
 %damping is way too strong or something
 
+
+eps_index = 100;
+
 F0 = 1; % F(0), initial condition for force on the strings
-mu = sqrt(epsilon(:,10).^2 + (X.^2)); 
+mu = sqrt(epsilon(:,eps_index).^2 + (X.^2)); 
 
 X_n = X./(omega');
 
 
-% Acoustics of musical instruments, page 280
-Vb = ((2.*pi.*F0.*X_n)./(mu.*Z0)) .* exp(1j.*(epsilon(:,10) + X_n + 1) .* omega'.*t) .* (mu.*cos(mu.*omega'.*t) + 1j.*X_n.*sin(mu.*omega'.*t));
+% paper, eq 19
+param_p = X+mu;
+param_m = X-mu;
 
-figure
-plot(t, db(abs(Vb(5,:)./Vb(5,1))));
-title("Bridge displacement");
+R = abs((param_p.*exp(1j.*param_p.*t) - param_m.*exp(1j.*param_m.*t))./(2.*mu)).^2;
 
+for ii = 1:length(f)
+    figure
+    plot(t,10*log10(R(ii,:)));
+    title(f(ii));
+end
+
+%%
+
+tau_a = 1./imag(a);
+tau_b = 1./imag(b);
+T60 = zeros(length(f),1);
+for ii = 1:length(f)
+
+    R_db = 10*log10(R(ii,:)./R(ii,1));
+    found = false;
+    jj = 1;
+    while found == false
+        if R_db(jj) <= -60
+            T60(ii) = t(jj);
+            found = true;
+        end
+        jj = jj+1;
+    end
+
+end

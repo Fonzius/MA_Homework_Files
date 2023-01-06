@@ -155,16 +155,22 @@ for ii = 1:length(f)
     grid minor
 end
 
-
+figure
+for ii = 1:length(f)
+    subplot(length(f),1,ii);
+    plot(epsilon(ii,:), imag(a(ii,:)));
+    hold on
+    plot(epsilon(ii,:), imag(b(ii,:)));
+    title(ii + "th freq " + f(ii));
+    xlabel("Epsilon [Hz]");
+    ylabel("Eigenmode Shift[Hz]");
+    legend("a","b");
+    grid minor
+end
 
 %% Point d
 
-t = linspace(0,10,1000); %time axis
-
-x = zeros(length(f), 1000); %x axis, goes from 0 to the length (Z_final(ii,2)) of the string
-for ii = 1:length(f)
-    x(ii,:) = linspace(0,Z_final(ii,2),1000);
-end
+t = linspace(0,1,1000); %time axis
 
 %Displacement computed for an arbitrary epsilon. The higher/lower epsilon
 %should give more minima, epsilon values around the middle (150th index)
@@ -172,13 +178,39 @@ end
 %magnitude X the reults are very convincing, for PlateZ2 it seems that the
 %damping is way too strong or something
 
-F0 = 1; % F(0), initial condition for force on the strings
-mu = sqrt(epsilon(:,100).^2 + (X.^2)); 
 
-% Acoustics of musical instruments, page 280
-Vb = ((2.*pi.*F0.*X)./(mu.*Z0)) .* exp(1j.*(epsilon(:,100) + X + 1) .*t) .* (mu.*cos(mu.*omega'.*t) + 1j.*X.*sin(mu.*omega'.*t));
+eps_index = 100;
+
+F0 = 1; % F(0), initial condition for force on the strings
+mu = sqrt(epsilon(:,eps_index).^2 + (X.^2)); 
+
+X_n = X./(omega');
+
+
+% paper, eq 19
+param_p = X+mu;
+param_m = X-mu;
+
+R = abs((param_p.*exp(1j.*param_p.*t) - param_m.*exp(1j.*param_m.*t))./(2.*mu)).^2;
 
 figure
-plot(t, db(abs(Vb(5,:)./Vb(5,1))));
-title("Bridge displacement");
+plot(t,10*log10(R(1,:)));
+title("WAA");
 
+
+tau_a = 1./imag(a);
+tau_b = 1./imag(b);
+T60 = zeros(1,length(f));
+for ii = 1:length(f)
+
+    R_db = 10*log10(R(ii,:)/R(ii,1));
+    found = false;
+    jj = 1;
+    while found == false
+        if R_db(jj) <= -60
+            T60(ii) = t(jj);
+            found = true;
+        end
+    end
+
+end

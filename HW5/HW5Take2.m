@@ -21,7 +21,9 @@ omega_e4 = 2*pi*f_e4;
 
 Z_mouth_e4 = 1j* (L_c*rho./(pi.*r2.^2)) .* 2.*pi.*f_e4;
 
-Z_e4 = ZIN1(r2, r1, L+0.61*r1, 0,  k_e4, rho, c) + Z_mouth_e4;
+Z_L_e4= (0.25.*(f_e4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_e4*2*pi/pi./r1).*((1+cos(alpha))/2);
+
+Z_e4 = ZIN1(r2, r1, L, Z_L_e4,  k_e4, rho, c) + Z_mouth_e4;
 
 max_index_e4 = find(islocalmin(db(Z_e4)),1);
 a2 = r2(max_index_e4); %radius at the mouth of the player
@@ -32,9 +34,9 @@ x1 = a2/tan(alpha);
 figure
 plot(r1,db(Z_e4));
 xline(r1(max_index_e4));
-xlabel("Foot Radius");
+xlabel("Foot Radius[m]");
 xlim([r1(1), r1(10000)]);
-ylabel("Z");
+ylabel("Z dB");
 
 %% Question 2
 close all;
@@ -45,6 +47,8 @@ k_fs4 = 2*pi*f_fs4/c;
 
 Z_mouth_fs4 = 1j* (L_c*rho./(pi.*a2.^2)) .* 2.*pi.*f_fs4;
 
+Z_L_fs4= (0.25.*(f_fs4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_fs4*2*pi/pi./a1).*((1+cos(alpha))/2);
+
 
 D_fs4 = linspace(a1,L-a1,10000); %goes from mouth of the player to foot of the recorder
 
@@ -52,7 +56,7 @@ r_fs4 = a2 - D_fs4.*tan(alpha); %radius of the pipe where the hole is
 
 Z_hole_fs4 = 1./(-1j* ((pi*a1^2)/(rho*c))*cot(k_fs4.*(0.85.*a1+r_fs4))); %Acoustic length of the hole simplified to be 0.85L as page 466 Rossing
 
-Z_in_fs4 = ZIN1(r_fs4, a1, L-D_fs4+0.61*a1, 0,  k_fs4, rho, c);
+Z_in_fs4 = ZIN1(r_fs4, a1, L-D_fs4, Z_L_fs4,  k_fs4, rho, c);
 Z_end_fs4 = 1./((1./(Z_in_fs4)) + (1./(Z_hole_fs4)));
 Z_fs4 = ZIN1(a2, r_fs4, D_fs4, Z_end_fs4,  k_fs4, rho, c) + Z_mouth_fs4;
 
@@ -77,11 +81,13 @@ k_gs4 = 2*pi*f_gs4/c;
 D_gs4 = linspace(a1,x_fs4-2*a1,10000);
 r_gs4 = a2 - D_gs4.*tan(alpha);
 
+Z_L_gs4= (0.25.*(f_gs4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_gs4*2*pi/pi./a1).*((1+cos(alpha))/2);
+
 Z_hole1_gs4 = 1./(-1j* ((pi*a1^2)/(rho*c))*cot(k_gs4.*(0.85.*a1+r_max_fs4)));
 
 Z_hole2_gs4 = 1./(-1j* ((pi*a1^2)/(rho*c))*cot(k_gs4.*(0.85.*a1+r_gs4)));
 
-Z_in_gs4 = 1./((1./ZIN1(r_max_fs4, a1, L-x_fs4+0.61*a1, 0, k_gs4, rho, c))+(1./Z_hole1_gs4));
+Z_in_gs4 = 1./((1./ZIN1(r_max_fs4, a1, L-x_fs4, Z_L_gs4, k_gs4, rho, c))+(1./Z_hole1_gs4));
 
 Z_middle_gs4 = ZIN1(r_gs4, r_max_fs4, x_fs4 - D_gs4, Z_in_gs4, k_gs4, rho, c);
 
@@ -148,4 +154,25 @@ Re = Uj*h/nu;
 
 L_channel = 0.025; %[m]
 channel_thickness = sqrt(nu*L_channel/Uj);
+
+%% QUESTION: WHY AM I DOING THIS (approximating to a normal cylindrical pipe)
+
+n = 100000;
+r_pipe = linspace(0.0001,0.2,n);
+
+Z_L_pipe= (0.25.*(f_e4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_e4*2*pi/pi./r_pipe).*((1+cos(alpha))/2);
+Z_mouth_pipe = 1j* (L_c*rho./(pi.*r_pipe.^2)) .* 2.*pi.*f_e4;
+Z0 = rho*c./(pi.*r_pipe.^2);
+Z_pipe =  Z_mouth_pipe + Z0.* ((Z_L_pipe.*cos(k_e4.*L)+1j.*Z0.*sin(k_e4.*L))./(1j.*Z_L_pipe.*sin(k_e4.*L)+Z0.*cos(k_e4.*L)));
+
+max_index_pipe = find(islocalmin(db(Z_pipe)), 1, 'last');
+
+r_max_pipe = r_pipe(max_index_pipe);
+
+figure
+plot(r_pipe,db(Z_pipe));
+xline(r_max_pipe);
+xlabel("x[m]");
+ylabel("Z dB");
+
 

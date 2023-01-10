@@ -125,10 +125,9 @@ hold on
 plot(x,-r2,'k', LineWidth=2);
 yline(0, '--');
 ylim([-(r(1)+0.2), r(1)+0.2]);
-xline(x(h1_index),'--', 'Foot Hole');
-xline(x(h2_index),'--', 'Mouth Hole');
-xlabel('x[m]');
-ylabel('y[m]');
+xline(x(h1_index),'--');
+xline(x(h2_index),'--');
+xlabel()
 
 %% Question 4
 delta_p = 55; %[Pa]

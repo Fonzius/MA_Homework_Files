@@ -21,15 +21,17 @@ omega_e4 = 2*pi*f_e4;
 
 Z_mouth_e4 = 1j* (L_c*rho./(pi.*r2.^2)) .* 2.*pi.*f_e4;
 
-Z_L_e4= (0.25.*(f_e4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_e4*2*pi/pi./r1).*((1+cos(alpha))/2);
+%Z_L_e4 = (0.25.*(f_e4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_e4*2*pi/pi./r1).*((1+cos(alpha))/2);
 
-Z_e4 = ZIN1(r2, r1, L, Z_L_e4,  k_e4, rho, c) + Z_mouth_e4;
+Z_e4 = ZIN1(r2, r1, L + 0.85.*r1, 0,  k_e4, rho, c) + Z_mouth_e4;
 
-max_index_e4 = find(islocalmin(db(Z_e4)),1);
+max_index_e4 = find(islocalmin(db(Z_e4)),1,'last');
 a2 = r2(max_index_e4); %radius at the mouth of the player
 a1 = r1(max_index_e4); %radius at the end of the recorder
 Z_max = Z_e4(max_index_e4);
 x1 = a2/tan(alpha);
+
+L_corr = L+a1*0.85;
 
 figure
 plot(r1,db(Z_e4));
@@ -47,8 +49,7 @@ k_fs4 = 2*pi*f_fs4/c;
 
 Z_mouth_fs4 = 1j* (L_c*rho./(pi.*a2.^2)) .* 2.*pi.*f_fs4;
 
-Z_L_fs4= (0.25.*(f_fs4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_fs4*2*pi/pi./a1).*((1+cos(alpha))/2);
-
+%Z_L_fs4= (0.25.*(f_fs4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_fs4*2*pi/pi./a1).*((1+cos(alpha))/2);
 
 D_fs4 = linspace(a1,L-a1,10000); %goes from mouth of the player to foot of the recorder
 
@@ -56,7 +57,7 @@ r_fs4 = a2 - D_fs4.*tan(alpha); %radius of the pipe where the hole is
 
 Z_hole_fs4 = 1./(-1j* ((pi*a1^2)/(rho*c))*cot(k_fs4.*(0.85.*a1+r_fs4))); %Acoustic length of the hole simplified to be 0.85L as page 466 Rossing
 
-Z_in_fs4 = ZIN1(r_fs4, a1, L-D_fs4, Z_L_fs4,  k_fs4, rho, c);
+Z_in_fs4 = ZIN1(r_fs4, a1, L_corr-D_fs4, 0,  k_fs4, rho, c);
 Z_end_fs4 = 1./((1./(Z_in_fs4)) + (1./(Z_hole_fs4)));
 Z_fs4 = ZIN1(a2, r_fs4, D_fs4, Z_end_fs4,  k_fs4, rho, c) + Z_mouth_fs4;
 
@@ -81,13 +82,13 @@ k_gs4 = 2*pi*f_gs4/c;
 D_gs4 = linspace(a1,x_fs4-2*a1,10000);
 r_gs4 = a2 - D_gs4.*tan(alpha);
 
-Z_L_gs4= (0.25.*(f_gs4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_gs4*2*pi/pi./a1).*((1+cos(alpha))/2);
+%Z_L_gs4= (0.25.*(f_gs4*2*pi).^2.*rho./pi./c+1j.*0.61.*rho.*f_gs4*2*pi/pi./a1).*((1+cos(alpha))/2);
 
 Z_hole1_gs4 = 1./(-1j* ((pi*a1^2)/(rho*c))*cot(k_gs4.*(0.85.*a1+r_max_fs4)));
 
 Z_hole2_gs4 = 1./(-1j* ((pi*a1^2)/(rho*c))*cot(k_gs4.*(0.85.*a1+r_gs4)));
 
-Z_in_gs4 = 1./((1./ZIN1(r_max_fs4, a1, L-x_fs4, Z_L_gs4, k_gs4, rho, c))+(1./Z_hole1_gs4));
+Z_in_gs4 = 1./((1./ZIN1(r_max_fs4, a1, L_corr-x_fs4, 0, k_gs4, rho, c))+(1./Z_hole1_gs4));
 
 Z_middle_gs4 = ZIN1(r_gs4, r_max_fs4, x_fs4 - D_gs4, Z_in_gs4, k_gs4, rho, c);
 

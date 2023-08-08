@@ -1,7 +1,7 @@
-# MA_Homework_Files
+# Musical Acoustics Homework Files
 - by Xinmeng Luan, Marco Bernasconi, 20-01-2023
 
-These files pertain to the Musical Acoustics coursework and are organized as follows: the source code 
+These files pertain to the Musical Acoustics coursework held at Politecnico di Milano by professor Fabio Antonacci and are organized as follows: the source code 
 is stored in the *"Code"* folder, the assignment files can be found in the *"Assignments"* folder, and the 
 reports are located in the *"Reports"* folder. There are a total of 9 assignments：
 - **Helmholtz resonator and system impedance**
@@ -14,3 +14,5 @@ reports are located in the *"Reports"* folder. There are a total of 9 assignment
   a tree and analyze the response obtained)
 - **Piano string FD model** (Implement FD scheme, Generate the sound)
 - **Brass instrument simulation** (Impendance of a tube, Tube with bell, Mouthpiece, Complete model)
+
+The projects were awarded a final grade of 30/30

@@ -3,7 +3,7 @@
 
 These files pertain to the Musical Acoustics coursework and are organized as follows: the source code 
 is stored in the *"Code"* folder, the assignment files can be found in the *"Assignments"* folder, and the 
-reports are located in the *"Reports"* folder. There are a total of 9 assignments.
+reports are located in the *"Reports"* folder. There are a total of 9 assignments：
 - **Helmholtz resonator and system impedance**
 - **2D and 1D systems** (Circular membrane, Circular plate, Coupled system)
 - **Horn design** (Design of the exponential section, Design of the compound horn)
